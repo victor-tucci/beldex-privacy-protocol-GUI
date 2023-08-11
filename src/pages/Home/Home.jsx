@@ -366,7 +366,7 @@ const Home = () => {
         </Menu>
         <SwapListMenu openSwapCollapse={openSwapCollapse} handleCloseSwapMenu={handleCloseSwapMenu} swapMenuOrigin={swapMenuOrigin} />
         <Container disableGutters sx={{ mt: 22, px: 12 }} maxWidth="xl">
-        <Box sx={{display: 'flex', justifyContent: 'space-around'}}>
+        <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
           
           <Box className="firstBox">
             <Typography variant="body1" gutterBottom component="div" color="text.light" >
