@@ -14,6 +14,7 @@ import BeldexETH from '../../contract-artifacts/BeldexETH.json';
 import BeldexBNB from '../../contract-artifacts/BeldexBNB.json';
 import * as actionTypes from "../../common/actionTypes";
 import BgImage from '../../icons/background.jpg';
+import MaticLogo from '../../icons/polygon-matic-icon.png';
 import BN from 'bn.js'
 import crypto from 'crypto';
 
@@ -365,6 +366,8 @@ const Home = () => {
         </Menu>
         <SwapListMenu openSwapCollapse={openSwapCollapse} handleCloseSwapMenu={handleCloseSwapMenu} swapMenuOrigin={swapMenuOrigin} />
         <Container disableGutters sx={{ mt: 22, px: 12 }} maxWidth="xl">
+        <Box sx={{display: 'flex', justifyContent: 'space-around'}}>
+          
           <Box className="firstBox">
             <Typography variant="body1" gutterBottom component="div" color="text.light" >
               Choose which cryptoCurrency you want to
@@ -375,6 +378,18 @@ const Home = () => {
             <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
               Privacy protocol.
             </Typography>
+          </Box>
+          <Box>
+            <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Supported Chain</Typography>
+            {currencyList.map((list, index) =>
+              <Box key={index} onClick={() => swapMarket(list.currency)}  sx={{padding: '10px', width: '60px', height: '60px', border: 'solid #213f46', borderRadius: '60px', margin: 'auto'}}>
+              <img alt="MATIC image" src={MaticLogo} width="35"/>
+  
+              </Box>
+              // <CurrencyCard key={index} currency={list.currency} subTitle={list.subTitle} swapMarket={swapMarket} />
+            )}
+          
+          </Box>
           </Box>
           <Box sx={{ py: 3, width: '230px' }}>
             <Box sx={{ display: 'flex', border: 'solid 1px #2c8ce5', padding: 0, borderRadius: '20px', height: '50px' }}>
@@ -387,13 +402,13 @@ const Home = () => {
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: { xs: 'space-evenly', sm: 'space-around' }, flexWrap: 'wrap', position: 'absolute', left: 50, right: 50, pb: '40px' }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: { xs: 'space-evenly', sm: 'space-around' }, flexWrap: 'wrap', position: 'absolute', left: 50, right: 50, pb: '40px' }}>
 
             {currencyList.map((list, index) =>
               <CurrencyCard key={index} currency={list.currency} subTitle={list.subTitle} swapMarket={swapMarket} />
             )}
 
-          </Box>
+          </Box> */}
         </Container>
       </Box>
       <CustomizedSnackbars open={snackbar.open} handleClose={snackbarHandleClose} severity={snackbar.severity} message={snackbar.message} />

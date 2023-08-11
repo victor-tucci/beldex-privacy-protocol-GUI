@@ -1,13 +1,11 @@
 const config = {
     mnemonic: "must antenna drop draw repeat crumble excuse skin stumble either mask plate",
     deployed : {
-        'Utils':  "0xEc7486A8F029cD8910630A270F2f7C32fe93d0B9",
-        'Monkey': "0x893E7E213E0D0124C60d2Fa03B80488454deC2b6",
-        'BeldexIP':  "0x98b2138464030323dA530fF0086994B16D95aadA",
-        'BeldexRedeem':  "0x79803863a1c92BE1E9A2C3D96814464eEcB7c08e",
-        'BeldexTransfer':  "0x2ca7C3dbD10364b8c1B11b0F2c9d5D4fbc39eef5",
-        'BeldexMAT' : "0x43d91CB8BE8100B99F16913e918E360F2D9DD019",
-        'BeldexMONK' : "0x9067b5F9F6F429B0fd8F986cdD7CD06CBB5d4808"
+        'Utils':  "0x4b07413e81d8a546301ee9669b6c8ac1f5804560",
+        'BeldexIP':  "0x5c1b43f166C0aA616B0bF11A2F633e37706A13E7",
+        'BeldexRedeem':  "0x4b07413e81d8a546301ee9669b6c8ac1f5804560",
+        'BeldexTransfer':  "0x0813c16dcf219d8ea3c316aa1fa37ab3f36bb416",
+        'BeldexMAT' : "0x5bd5f5f24890681acbcfed2124f2b561941aba51",
     }
     // deployed: {
     //     'Utils': "0x5Bd0CC10109243e8441329AF1d19b6c3a2a8BDbA",

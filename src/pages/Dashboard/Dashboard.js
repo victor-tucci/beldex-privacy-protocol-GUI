@@ -50,7 +50,7 @@ const computeViewLabels = (swap) => {
     redeem: {
       subTitle: `Redeem r${swap} to ${swap}`,
       btnLabel: "Confirm Redeem",
-      helperText: (val) => `You will receive ${Math.floor(val*10) / 100} ${swap}`
+      helperText: (val) => `You will receive ${Math.floor(val) / 100} ${swap}`
     },
   }
 }
@@ -214,7 +214,7 @@ const Dashboard = (props) => {
       setSnackbar({ open: true, severity: 'warning', message: '[Short window] Your redeem has been queued. Please wait' });
       await user.redeem(transValue);
       await getBalance(walletAddress);
-      setSnackbar({ open: true, severity: 'success', message: `Redeem of ${transValue}rMATIC to ${transValue/10} MATIC was successful` });
+      setSnackbar({ open: true, severity: 'success', message: `Redeem of ${transValue}rMATIC to ${transValue/100} MATIC was successful` });
       loading(false);
     } catch (e) {
       setSnackbar({ open: true, severity: 'error', message: e.message });
