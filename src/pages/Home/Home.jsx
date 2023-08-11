@@ -382,9 +382,9 @@ const Home = () => {
           <Box>
             <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Supported Chain</Typography>
             {currencyList.map((list, index) =>
-              <Box key={index} onClick={() => swapMarket(list.currency)}  sx={{padding: '10px', width: '60px', height: '60px', border: 'solid #213f46', borderRadius: '60px', margin: 'auto'}}>
+              <Box key={index} onClick={() => swapMarket(list.currency)}  sx={{display: 'flex', cursor: 'pointer', padding: '10px', width: '130px', height: '60px', border: 'solid #213f46', borderRadius: '60px', margin: 'auto'}}>
               <img alt="MATIC image" src={MaticLogo} width="35"/>
-  
+              <Typography sx={{margin: 'auto', paddingLeft: '10px'}} component="span" gutterBottom color="text.light">Sign-In</Typography>
               </Box>
               // <CurrencyCard key={index} currency={list.currency} subTitle={list.subTitle} swapMarket={swapMarket} />
             )}
