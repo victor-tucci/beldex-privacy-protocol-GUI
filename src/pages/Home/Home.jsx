@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Web3 from 'web3';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
-import { CssBaseline, Container, Box, Typography, SvgIcon, MenuItem, Menu } from '@mui/material';
+import { CssBaseline, Container, Button, Box, Typography, SvgIcon, MenuItem, Menu } from '@mui/material';
 import { CurrencyCard, Header, SwapListMenu, CustomizedSnackbars, AuthenticationDialog } from '../../components';
 import ClientBeldexMAT from '../../client/client_beldexmat';
 import ClientBeldexAlicebob from '../../client/client_beldexalicebob';
@@ -46,6 +46,7 @@ const Home = () => {
   const storeAddr = useSelector((state) => state.walletReducer);
   const swapDetails = useSelector((state) => state.swapReducer);
   const userData = useContext(UserContext);
+  const [walletBal, setWalletBal] = useState('');
   const [walletAddress, setWalletAddress] = useState(storeAddr.walletAddress);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -57,7 +58,6 @@ const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setWalletAddress(storeAddr.walletAddress);
     web3Obj = new Web3(window.ethereum);
     if (storeAddr.walletName === "Meta Mask") {
       web3Obj = new Web3(window.ethereum);
@@ -68,6 +68,7 @@ const Home = () => {
     contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
     user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
     userData.setUserDetails(user);
+    setWalletAddress(storeAddr.walletAddress);
   }, [storeAddr])
 
 
@@ -75,7 +76,7 @@ const Home = () => {
     const setContract = () => {
       if (swapDetails.swap) {
         switch (swapDetails.swap) {
-           case 'MATIC':
+          case 'MATIC':
             contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
             user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
             break;
@@ -111,15 +112,19 @@ const Home = () => {
   const handleWalletMenuClose = async (selectedWallet) => {
     if (selectedWallet === "BSC") {
       if (typeof window.BinanceChain !== 'undefined') {
-      const account = await window.BinanceChain.request({ method: 'eth_requestAccounts' });
-      if (account) connectToBinance(selectedWallet);
+        const account = await window.BinanceChain.request({ method: 'eth_requestAccounts' });
+        if (account) connectToBinance(selectedWallet);
       } else {
         setSnackbar({ open: true, severity: 'warning', message: 'Binance Chain not installed.' });
       }
     } else if (selectedWallet === "Meta Mask") {
       if (typeof window.ethereum !== 'undefined') {
-        const account = await window.ethereum?.request({ method: 'eth_requestAccounts' });
-        if (account) connectToMetaMask(selectedWallet);
+        try {
+          const account = await window.ethereum?.request({ method: 'eth_requestAccounts' });
+          if (account) connectToMetaMask(selectedWallet);
+        } catch (err) {
+          setSnackbar({ open: true, severity: 'error', message: err.message });
+        }
       } else {
         setSnackbar({ open: true, severity: 'warning', message: 'Meta Mask not installed.' });
       }
@@ -175,6 +180,9 @@ const Home = () => {
               // check drop down values
               contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
               clearInterval(address);
+              web3Obj.eth.getBalance(res).then(data => {
+                setWalletBal(data / 1e18);
+              });
               user = new ClientBeldexMAT(web3Obj, contract, res);
               userData.setUserDetails(user);
 
@@ -344,7 +352,7 @@ const Home = () => {
     <Box sx={{ display: 'flex', background: `url(${BgImage})`, backgroundSize: 'cover', minHeight: '100vh' }}>
       <Box sx={{ background: 'rgba(19, 19, 26, 0.75)', width: '100%' }}>
         <CssBaseline />
-        <Header showNav={true} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} handleCloseMenu={handleCloseMenu} />
+        <Header showNav={true} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={walletBal} handleCloseMenu={handleCloseMenu} />
         <Menu
           sx={{ mt: '45px' }}
           id="menu-appbar"
@@ -366,30 +374,30 @@ const Home = () => {
         </Menu>
         <SwapListMenu openSwapCollapse={openSwapCollapse} handleCloseSwapMenu={handleCloseSwapMenu} swapMenuOrigin={swapMenuOrigin} />
         <Container disableGutters sx={{ mt: 22, px: 12 }} maxWidth="xl">
-        <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-          
-          <Box className="firstBox">
-            <Typography variant="body1" gutterBottom component="div" color="text.light" >
-              Choose which cryptoCurrency you want to
-            </Typography>
-            <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
-              Privately transfer via
-            </Typography>
-            <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
-              Privacy protocol.
-            </Typography>
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Supported Chain</Typography>
-            {currencyList.map((list, index) =>
-              <Box key={index} onClick={() => swapMarket(list.currency)}  sx={{display: 'flex', cursor: 'pointer', padding: '10px', width: '130px', height: '60px', border: 'solid #213f46', borderRadius: '60px', margin: 'auto'}}>
-              <img alt="MATIC image" src={MaticLogo} width="35"/>
-              <Typography sx={{margin: 'auto', paddingLeft: '10px'}} component="span" gutterBottom color="text.light">Sign-In</Typography>
-              </Box>
-              // <CurrencyCard key={index} currency={list.currency} subTitle={list.subTitle} swapMarket={swapMarket} />
-            )}
-          
-          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+            <Box className="firstBox">
+              <Typography variant="body1" gutterBottom component="div" color="text.light" >
+                Choose which cryptoCurrency you want to
+              </Typography>
+              <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
+                Privately transfer via
+              </Typography>
+              <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
+                Privacy protocol.
+              </Typography>
+            </Box>
+            {/* <Box>
+              <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Supported Chain</Typography>
+              {currencyList.map((list, index) =>
+                <Box key={index} onClick={() => swapMarket(list.currency)} sx={{ display: 'flex', cursor: 'pointer', padding: '10px', width: '130px', height: '60px', border: 'solid #213f46', borderRadius: '60px', margin: 'auto' }}>
+                  <img alt="MATIC image" src={MaticLogo} width="35" />
+                  <Typography sx={{ margin: 'auto', paddingLeft: '10px' }} component="span" gutterBottom color="text.light">Sign-In</Typography>
+                </Box>
+                // <CurrencyCard key={index} currency={list.currency} subTitle={list.subTitle} swapMarket={swapMarket} />
+              )}
+
+            </Box> */}
           </Box>
           <Box sx={{ py: 3, width: '230px' }}>
             <Box sx={{ display: 'flex', border: 'solid 1px #2c8ce5', padding: 0, borderRadius: '20px', height: '50px' }}>
@@ -401,7 +409,9 @@ const Home = () => {
               </Box>
             </Box>
           </Box>
-
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button onClick={() => swapMarket('MATIC')} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Sign-In</Button>
+          </Box>
           {/* <Box sx={{ display: 'flex', justifyContent: { xs: 'space-evenly', sm: 'space-around' }, flexWrap: 'wrap', position: 'absolute', left: 50, right: 50, pb: '40px' }}>
 
             {currencyList.map((list, index) =>

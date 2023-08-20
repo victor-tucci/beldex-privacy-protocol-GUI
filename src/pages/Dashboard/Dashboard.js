@@ -269,8 +269,12 @@ const Dashboard = (props) => {
       }
     } else if (selectedWallet === "Meta Mask") {
       if (typeof window.ethereum !== 'undefined') {
-        const account = await window.ethereum?.request({ method: 'eth_requestAccounts' });
-        if (account) connectToMetaMask(selectedWallet);
+        try {
+          const account = await window.ethereum?.request({ method: 'eth_requestAccounts' });
+          if (account) connectToMetaMask(selectedWallet);
+        } catch (err) {
+          setSnackbar({ open: true, severity: 'error', message: err.message });
+        }
       } else {
         setSnackbar({ open: true, severity: 'warning', message: 'Meta Mask not installed.' });
       }
@@ -345,7 +349,7 @@ const Dashboard = (props) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} />
+      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal/100)}/>
       <SidePanel mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
       <Box sx={ContentStyle}>
         <LeftPanel swap={swap} balance={walletBal} mintValue={mintValue} />

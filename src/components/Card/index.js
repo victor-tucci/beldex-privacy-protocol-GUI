@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { Box, Card, CardContent, Typography, CircularProgress } from '@mui/material';
+import balance from '../../icons/balance.svg';
+import rbalance from '../../icons/rbalance.svg';
+import ratio from '../../icons/balance_ratio.svg';
 
 const linearColor = {
-  success : ['#388e3c', '#0b830b', '#006400'],
-  warning: ['#af924a', '#594719', '#544217'],
-  info: ['#1042aa', '#113457', '#122c47']
+  success : rbalance,
+  warning: balance,
+  info: ratio
 }
 export default function StyledCard(props) {
   const colorVal = linearColor[props.variant];
@@ -12,7 +15,7 @@ export default function StyledCard(props) {
   return (
     <Box
       sx={{
-        width: {xs: '100%', sm: 320, md: 300, lg: 335},
+        width: {xs: '100%', sm: 340, md: 360, lg: 375},
         height: 145,
         margin: '20px 0',
         backgroundColor: 'background.card',
@@ -25,7 +28,7 @@ export default function StyledCard(props) {
       }}
     >
       <Card sx={{ display: 'flex', backgroundColor: 'transparent', 
-        padding: {xs: '25px 20px',sm: '25px 20px',md: '25px 20px', lg: '25px 35px'}, height: 145 }}>
+        padding: '25px 15px', height: 145 }}>
         <Box sx={{ position: 'relative', display: 'inline-flex' }}>
           <CircularProgress
             size={95}
@@ -49,7 +52,7 @@ export default function StyledCard(props) {
               justifyContent: 'center',
             }}
           >
-            <svg height="95" width="95">
+            {/* <svg height="95" width="95">
               <defs> 
                 <linearGradient id={props.variant} gradientTransform="rotate(65)">
                   <stop offset="0%" stopColor={colorVal[0]} />
@@ -59,7 +62,8 @@ export default function StyledCard(props) {
               </defs>
               <circle cx="47.5" cy="47.5" r="25" fill={`url(#${props.variant})`} />
               <text x="35%" y="50%" textAnchor="middle" fontWeight="bold" fontFamily="sans-serif" stroke="#1b1b24" fill="#1b1b24" fontSize="55px" dy=".3em">B</text>
-            </svg>
+            </svg> */}
+            <img alt="" height="55px" width="55px" src={colorVal} />
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexGrow: 1, flexDirection: 'column', textAlign: 'right' }}>
