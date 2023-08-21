@@ -299,7 +299,7 @@ const Home = () => {
 
   const downloadScret = (text) => {
     const anchor = document.createElement('a')
-    anchor.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent('This private key is for the access of BDX account.It cannot be used to access any other Beldex account.' + '\n' + text));
+    anchor.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent('This private key is for accessing the Privacy Protocol account. It cannot be used to access any other Privacy Protocol account.' + '\n' + text));
     anchor.setAttribute('download', `bdx_secret_key_${Date.now()}`);
     anchor.style.display = 'none';
     document.body.appendChild(anchor)
