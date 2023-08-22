@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { IconButton, DialogTitle, DialogContentText, Dialog, DialogContent, Typography, Link } from '@mui/material';
 import { withStyles } from '@mui/styles';
@@ -45,12 +45,16 @@ const componentStyle = theme => {
 
 
 const AuthenticationDialog = (props) => {
-  const { onClose, open, classes, handleRegister, handleLogin } = props;
+  const { onClose, open, classes, handleRegister, handleLogin, isRegisterView } = props;
   const [privateKey, setPrivateKey] = useState('');
   const [ownKey, setOwnKey] = useState(undefined);
-  const [registerView, setRegisterView] = useState(false);
+  const [registerView, setRegisterView] = useState(isRegisterView);
   const [pickOwn, setPickOwn] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  
+  useEffect(() => {
+    setRegisterView(isRegisterView)}, [isRegisterView])
+  
   const showRegister = () => {
     setRegisterView(true)
   }
@@ -68,12 +72,15 @@ const AuthenticationDialog = (props) => {
     setSnackbar(prev => ({ ...prev, open: false }));
   }
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    await onClose('');
+    // if(!isRegisterView){
+    //   setRegisterView(false)
+    // }
     setOwnKey(undefined);
     setPrivateKey('');
-    setRegisterView(false)
-    setPickOwn(false)
-    onClose('');
+    setPickOwn(false);
+    setRegisterView(isRegisterView)
   };
 
   const handleSubmit = () => {
@@ -150,6 +157,10 @@ const AuthenticationDialog = (props) => {
       <CustomizedSnackbars open={snackbar.open} handleClose={snackbarHandleClose} severity={snackbar.severity} message={snackbar.message} />
     </Fragment>
   );
+}
+
+AuthenticationDialog.defaultProps = {
+  isRegisterView: false
 }
 
 AuthenticationDialog.propTypes = {

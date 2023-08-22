@@ -47,6 +47,8 @@ const Home = () => {
   const swapDetails = useSelector((state) => state.swapReducer);
   const userData = useContext(UserContext);
   const [walletBal, setWalletBal] = useState('');
+  const [isRegisterView, setIsRegisterView] = useState(false);
+  
   const [walletAddress, setWalletAddress] = useState(storeAddr.walletAddress);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -218,25 +220,25 @@ const Home = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   }
 
-  const swapMarket = async (selectedMarket) => {
+  const swapMarket = async (selectedMarket, isRegView = false) => {
     dispatch({
       type: actionTypes.SWAPCHANGE,
       payload: selectedMarket
     });
     if (selectedMarket === "BNB") {
       if (walletAddress && storeAddr.walletName === "BSC") {
-        openUserAuthModal();
+        openUserAuthModal(isRegView);
       } else {
         await connectToBinance("BSC");
-        openUserAuthModal();
+        openUserAuthModal(isRegView);
 
       }
     } else if (selectedMarket !== "BNB") {
       if (walletAddress && storeAddr.walletName === "Meta Mask") {
-        openUserAuthModal();
+        openUserAuthModal(isRegView);
       } else {
         await connectToMetaMask("Meta Mask");
-        openUserAuthModal();
+        openUserAuthModal(isRegView);
       }
     }
   }
@@ -245,9 +247,10 @@ const Home = () => {
     setOpenAuthModal(false);
 
   }
-  const openUserAuthModal = () => {
+  const openUserAuthModal = (isRegView) => {
     if (walletAddress) {
       setOpenAuthModal(true);
+      setIsRegisterView(isRegView)
     } else {
       setSnackbar({ open: true, severity: 'warning', message: 'Please connect to wallet and then proceed.' });
     }
@@ -376,7 +379,7 @@ const Home = () => {
         <Container disableGutters sx={{ mt: 22, px: 12 }} maxWidth="xl">
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
-            <Box className="firstBox">
+            <Box className="firstBox" sx={{minWidth: '700px'}}>
               <Typography variant="body1" gutterBottom component="div" color="text.light" >
                 Choose which cryptoCurrency you want to
               </Typography>
@@ -386,6 +389,13 @@ const Home = () => {
               <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
                 Privacy protocol.
               </Typography>
+            </Box>
+            <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+            <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Currently we are supporting only Polygon network.</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button onClick={() => swapMarket('MATIC')} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', marginRight: '10px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Sign-In</Button>
+            <Button onClick={() => swapMarket('MATIC', true)} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Register</Button>
+          </Box>
             </Box>
             {/* <Box>
               <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Supported Chain</Typography>
@@ -409,9 +419,7 @@ const Home = () => {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button onClick={() => swapMarket('MATIC')} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Sign-In</Button>
-          </Box>
+          
           {/* <Box sx={{ display: 'flex', justifyContent: { xs: 'space-evenly', sm: 'space-around' }, flexWrap: 'wrap', position: 'absolute', left: 50, right: 50, pb: '40px' }}>
 
             {currencyList.map((list, index) =>
@@ -422,7 +430,7 @@ const Home = () => {
         </Container>
       </Box>
       <CustomizedSnackbars open={snackbar.open} handleClose={snackbarHandleClose} severity={snackbar.severity} message={snackbar.message} />
-      <AuthenticationDialog handleLogin={handleLogin} handleRegister={handleRegister} open={openAuthModal} onClose={handleDialogClose} />
+      <AuthenticationDialog isRegisterView={isRegisterView} handleLogin={handleLogin} handleRegister={handleRegister} open={openAuthModal} onClose={handleDialogClose} />
     </Box>
   )
 }

@@ -131,10 +131,10 @@ const HeaderCom = (props) => {
             <Link color="text.light" component="button" underline="none" classes={{ root: classes.link }}>Info</Link>
           </Box>} */}
           <Box sx={{ flexGrow: 0, display: 'flex', gap: '10px' }}>
-            <Button variant="outlined" classes={{ root: classes.tabBtn }}
+            {/* <Button variant="outlined" classes={{ root: classes.tabBtn }}
               color="secondary" sx={{width: '75px', justifyContent: 'space-between'}} onClick={handleOpenCoinListMenu}>
               <img alt="" width="20" src={MaticLogo} /> <ExpandMoreRoundedIcon/>
-            </Button>
+            </Button> */}
             <Tooltip title="Open settings">
               <Button
                 variant="outlined"
