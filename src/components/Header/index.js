@@ -10,6 +10,7 @@ import binance from '../../icons/binance.png';
 import metamask from '../../icons/metamask.png';
 import logo from '../../icons/privacy-protocol-logo.svg';
 import address from '../../icons/address.svg';
+import close from '../../icons/Close.svg';
 import arrow from '../../icons/arrow.svg';
 import MaticLogo from '../../icons/polygon-matic-icon.png';
 import * as actionTypes from "../../common/actionTypes";
@@ -239,7 +240,9 @@ const HeaderCom = (props) => {
             <Popover
               id={id}
               open={open}
-              sx={{marginTop: 2, '.MuiPopover-paper': {borderRadius: '20px'}}}
+              sx={{ marginTop: 2, 
+                '.MuiPopover-paper': { background: 'transparent', boxShadow: 'none', borderRadius: '0', position: 'absolute'} 
+              }}
               anchorEl={anchorEl}
               onClose={handleClose}
               anchorOrigin={{
@@ -251,18 +254,29 @@ const HeaderCom = (props) => {
                 horizontal: 'right',
               }}
             >
-              <Box sx={{  width: '400px', height: 'auto', background: 'rgb(41, 41, 57)', padding: '15px 20px' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
-                <Typography color="text.light" id="publicHash" sx={{ p: 0, wordBreak: 'break-all', fontWeight: 600 }}>Copy your Public Hash</Typography>
-                <Button sx={{height: '35px', fontSize: '14px'}} onClick={copyContent} variant="contained" endIcon={<ContentCopyIcon />}>
-                  Copy
-                </Button>
+              <Box sx={{background: 'transparent', width: '440px', padding: '15px'}}>
+                <Box 
+                sx={{display: 'flex', width: '30px', height: '30px', borderRadius: '15px', background: 'rgb(41, 41, 57)', border: 'solid 1px #5a5a5a', marginLeft: 'auto', justifyContent: 'center', flex: '1 1 0', position: 'absolute', right: '0px',  top: '0px', zIndex: '1301'}} onClick={handleClose}
+                >
+                  <img alt="" width="15px" src={close} />
                 </Box>
+                <Box sx={{ 
+                  // marginLeft: 'auto',
+                  borderRadius: '20px', position: 'relative', bottom: '0', left: '15px', border: 'solid 1px #5a5a5a',
+                  width: '400px', height: 'auto', background: 'rgb(41, 41, 57)', padding: '15px 20px' }}>
 
-                <Typography id="publicHash" sx={{ p: 0, wordBreak: 'break-all' }}>{publicHash}</Typography>
-                {/* <IconButton sx={{ width: '40px', height: '40px', margin: '40px 10px 0 0' }} onClick={copyContent}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+                    <Typography color="text.light" id="publicHash" sx={{ p: 0, wordBreak: 'break-all', fontWeight: 600 }}>Copy your Public Hash</Typography>
+                    <Button sx={{ height: '35px', fontSize: '14px' }} onClick={copyContent} variant="contained" endIcon={<ContentCopyIcon />}>
+                      Copy
+                    </Button>
+                  </Box>
+
+                  <Typography id="publicHash" sx={{ p: 0, wordBreak: 'break-all' }}>{publicHash}</Typography>
+                  {/* <IconButton sx={{ width: '40px', height: '40px', margin: '40px 10px 0 0' }} onClick={copyContent}>
                   <ContentCopyIcon />
                 </IconButton> */}
+                </Box>
               </Box>
             </Popover>
           </Box>

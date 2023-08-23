@@ -67,9 +67,6 @@ const Home = () => {
       web3Obj = new Web3(window.BinanceChain);
     }
     // check drop down values
-    new web3Obj.eth.requestAccounts(res => {
-      console.log('---res---', res)
-    })
     contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
     user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
     userData.setUserDetails(user);
