@@ -40,12 +40,12 @@ const computeViewLabels = (swap) => {
     mint: {
       subTitle: `Deposit ${swap} to r${swap}`,
       btnLabel: "Confirm Mint",
-      helperText: (val) => `Unit ${swap} = 0.00 ${swap}`
+      helperText: (val) => `Unit ${Math.floor(val)} r${swap} = ${Math.floor(val) / 100} ${swap}`
     },
     transfer: {
       subTitle: `My ${swap} Account Address`,
       btnLabel: "Confirm Transfer",
-      helperText: (val) =>  "Copy your Public Hash"
+      helperText: (val) =>  ""
     },
     redeem: {
       subTitle: `Redeem r${swap} to ${swap}`,
@@ -349,8 +349,8 @@ const Dashboard = (props) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal/100)}/>
-      <SidePanel mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
+      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal/100)} publicHash={user && user.account && user.account.publicKeyEncoded()}/>
+      {/* <SidePanel mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} /> */}
       <Box sx={ContentStyle}>
         <LeftPanel swap={swap} balance={walletBal} mintValue={mintValue} />
         <Box sx={{ width: '100%', textAlign: 'center' }}>

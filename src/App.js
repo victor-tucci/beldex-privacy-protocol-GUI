@@ -97,7 +97,7 @@ const getDesignTokens = (mode) => ({
 
         }
         : {
-          primary: green[600],
+          primary: '#3EC744',
           secondary: grey[100],
           light: grey[100],
           warning: amber[500],

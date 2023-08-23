@@ -48,7 +48,7 @@ const Home = () => {
   const userData = useContext(UserContext);
   const [walletBal, setWalletBal] = useState('');
   const [isRegisterView, setIsRegisterView] = useState(false);
-  
+
   const [walletAddress, setWalletAddress] = useState(storeAddr.walletAddress);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -67,6 +67,9 @@ const Home = () => {
       web3Obj = new Web3(window.BinanceChain);
     }
     // check drop down values
+    new web3Obj.eth.requestAccounts(res => {
+      console.log('---res---', res)
+    })
     contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
     user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
     userData.setUserDetails(user);
@@ -355,7 +358,7 @@ const Home = () => {
     <Box sx={{ display: 'flex', background: `url(${BgImage})`, backgroundSize: 'cover', minHeight: '100vh' }}>
       <Box sx={{ background: 'rgba(19, 19, 26, 0.75)', width: '100%' }}>
         <CssBaseline />
-        <Header showNav={true} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={walletBal} handleCloseMenu={handleCloseMenu} />
+        <Header showNav={true} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={walletBal} handleCloseMenu={handleCloseMenu} publicHash={user && user.account && user.account.publicKeyEncoded()}/>
         <Menu
           sx={{ mt: '45px' }}
           id="menu-appbar"
@@ -379,9 +382,9 @@ const Home = () => {
         <Container disableGutters sx={{ mt: 22, px: 12 }} maxWidth="xl">
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
-            <Box className="firstBox" sx={{minWidth: '700px'}}>
+            <Box className="firstBox" sx={{ minWidth: '700px' }}>
               <Typography variant="body1" gutterBottom component="div" color="text.light" >
-                Choose which cryptoCurrency you want to
+                Choose which cryptocurrency you want to
               </Typography>
               <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
                 Privately transfer via
@@ -390,12 +393,12 @@ const Home = () => {
                 Privacy protocol.
               </Typography>
             </Box>
-            <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-            <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Currently we are supporting only Polygon network.</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button onClick={() => swapMarket('MATIC')} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', marginRight: '10px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Sign-In</Button>
-            <Button onClick={() => swapMarket('MATIC', true)} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Register</Button>
-          </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Currently we are supporting only Polygon network.</Typography>
+              <Box sx={{ display: 'flex', marginTop: '10px', justifyContent: 'flex-start' }}>
+                <Button onClick={() => swapMarket('MATIC')} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', marginRight: '10px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Sign-In</Button>
+                <Button onClick={() => swapMarket('MATIC', true)} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Register</Button>
+              </Box>
             </Box>
             {/* <Box>
               <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Supported Chain</Typography>
@@ -409,17 +412,7 @@ const Home = () => {
 
             </Box> */}
           </Box>
-          <Box sx={{ py: 3, width: '230px' }}>
-            <Box sx={{ display: 'flex', border: 'solid 1px #2c8ce5', padding: 0, borderRadius: '20px', height: '50px' }}>
-              <Typography color="text.light" sx={{ textTransform: 'uppercase', fontSize: '15px', fontWeight: 600, padding: '10px 15px', lineHeight: 2 }} >Check Tutorial</Typography>
-              <Box sx={{ background: 'linear-gradient(120deg, rgb(23, 91, 161), rgb(49, 152, 249))', height: '50px', width: '60px', borderRadius: '0 20px 20px 0', position: 'relative', left: 17 }}>
-                <SvgIcon viewBox="0 0 512 512" sx={{ fontSize: '40px', position: 'relative', left: '10px', fill: 'black', top: '5px' }}>
-                  <path d="M184.7,413.1l2.1-1.8l156.5-136c5.3-4.6,8.6-11.5,8.6-19.2c0-7.7-3.4-14.6-8.6-19.2L187.1,101l-2.6-2.3  C182,97,179,96,175.8,96c-8.7,0-15.8,7.4-15.8,16.6h0v286.8h0c0,9.2,7.1,16.6,15.8,16.6C179.1,416,182.2,414.9,184.7,413.1z" />
-                </SvgIcon>
-              </Box>
-            </Box>
-          </Box>
-          
+
           {/* <Box sx={{ display: 'flex', justifyContent: { xs: 'space-evenly', sm: 'space-around' }, flexWrap: 'wrap', position: 'absolute', left: 50, right: 50, pb: '40px' }}>
 
             {currencyList.map((list, index) =>

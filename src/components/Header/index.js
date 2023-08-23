@@ -3,11 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { AppBar, Avatar, Box, Toolbar, Tooltip, MenuItem, Container, IconButton, Button, Typography, Menu, Link, Popover } from '@mui/material';
 import { withStyles } from '@mui/styles';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import MenuIcon from '@mui/icons-material/Menu';
 import binance from '../../icons/binance.png';
 import metamask from '../../icons/metamask.png';
 import logo from '../../icons/privacy-protocol-logo.svg';
+import address from '../../icons/address.svg';
+import arrow from '../../icons/arrow.svg';
 import MaticLogo from '../../icons/polygon-matic-icon.png';
 import * as actionTypes from "../../common/actionTypes";
 
@@ -55,14 +58,15 @@ const HeaderCom = (props) => {
   const [anchorElWallet, setAnchorElWallet] = React.useState(null);
   const [anchorElCoinList, setAnchorElCoinList] = React.useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(walletIndex);
-  const { showNav, classes, walletAddress, handleDrawerToggle, handleWalletMenuClose, handleCloseMenu, walletBal } = props;
+  const { showNav, classes, walletAddress, handleDrawerToggle, handleWalletMenuClose, handleCloseMenu, walletBal, publicHash } = props;
   const [sWalletAddress, setWalletAddress] = React.useState(walletAddress);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
 
-  useEffect(() => {setWalletAddress(walletAddress)}, [walletAddress])
+  useEffect(() => { setWalletAddress(walletAddress) }, [walletAddress])
   const handleOpenWalletMenu = (event) => {
     setAnchorElWallet(event.currentTarget);
     handleWalletMenuClose(walletName);
@@ -75,16 +79,10 @@ const HeaderCom = (props) => {
     }
     setAnchorElWallet(null);
   };
-  const handleOpenCoinListMenu = (event) => {
-    setAnchorElCoinList(event.currentTarget);
-  };
+
   const handleCloseCoinListMenu = (event, setting) => {
     setAnchorElCoinList(null);
   };
-
-  const connectWallet = (event) => {
-    handleCloseMenu(event, { id: 0, text: "Swap" });
-  }
 
   const addressTruncate = React.useMemo(() => addressTruncateFn(sWalletAddress), [sWalletAddress]);
 
@@ -96,45 +94,41 @@ const HeaderCom = (props) => {
         walletName: ''
       }
     });
-    if(location.pathname === '/dashboard')    navigate('/')
+    if (location.pathname === '/dashboard') navigate('/')
   }
+
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const copyContent = async (e) => {
+    await navigator.clipboard.writeText(publicHash);
+  }
+
   return (
     <AppBar sx={{ padding: { xs: '10px', sm: '10px 90px' } }} position="fixed">
       <Container maxWidth="false" disableGutters>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          {/* <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
-          >
-            <MenuIcon fontSize="large" sx={{ color: '#fff' }} />
-          </IconButton> */}
           <img onClick={() => navigate('/')} alt="" height="74px" width="auto" src={logo} />
 
-          {/* <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            color="text.secondary"
-
-            sx={{ flexGrow: { xs: 1, md: showNav ? 0 : 1 }, mr: 2, display: { xs: 'flex' } }}
-          >
-            <img onClick={() => navigate('/')} alt="" height="35px" width="auto" src={logo} />
-          </Typography> */}
-          {/* {showNav && <Box sx={{ flexGrow: 1, mr: 2, display: { md: 'flex', xs: 'none' } }}>
-             <Link color="text.light" onClick={connectWallet} component="button" underline="none" sx={{ ml: 2 }} classes={{ root: classes.link }}>Privacy Protocol</Link>
-             <Link color="text.light" component="button" underline="none" classes={{ root: classes.link }}>Bridge</Link>
-            <Link color="text.light" component="button" underline="none" classes={{ root: classes.link }}>Tutorial</Link>
-            <Link color="text.light" component="button" underline="none" classes={{ root: classes.link }}>Q&A</Link>
-            <Link color="text.light" component="button" underline="none" classes={{ root: classes.link }}>Info</Link>
-          </Box>} */}
           <Box sx={{ flexGrow: 0, display: 'flex', gap: '10px' }}>
-            {/* <Button variant="outlined" classes={{ root: classes.tabBtn }}
-              color="secondary" sx={{width: '75px', justifyContent: 'space-between'}} onClick={handleOpenCoinListMenu}>
-              <img alt="" width="20" src={MaticLogo} /> <ExpandMoreRoundedIcon/>
-            </Button> */}
+            {location.pathname === '/dashboard' &&
+              <Button variant="outlined" classes={{ root: classes.tabBtn }} color="secondary" onClick={handleClick}>
+                <img alt="" width="20" src={address} />  <Typography sx={{ padding: '0 8px', fontWeight: 700, color: '#3EC744' }} component="span">Your Address</Typography>
+                <img alt="" width="20" src={arrow} />
+              </Button>}
+            <Button variant="outlined" disabled classes={{ root: classes.tabBtn }}
+              color="secondary" sx={{ width: '50px', '&.Mui-disabled': { background: 'rgb(41, 41, 57)' }, justifyContent: 'center' }}>
+              <img alt="" width="20" src={MaticLogo} />
+              {/* <ExpandMoreRoundedIcon/> */}
+            </Button>
             <Tooltip title="Open settings">
               <Button
                 variant="outlined"
@@ -151,7 +145,7 @@ const HeaderCom = (props) => {
               </Button>
 
             </Tooltip>
-            {sWalletAddress && selectedIndex >= 0 &&<Popover
+            {sWalletAddress && selectedIndex >= 0 && <Popover
               id="menu-appbar"
               open={Boolean(anchorElWallet)}
               anchorEl={anchorElWallet}
@@ -167,8 +161,8 @@ const HeaderCom = (props) => {
               }}
 
             >
-              <Box sx={{  padding: '20px', background: 'rgb(41,41,57)', alignItems: 'center' }}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Box sx={{ padding: '20px', background: 'rgb(41,41,57)', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Box sx={{ display: 'flex', gap: '10px' }}>
                     <Avatar sx={{ width: 24, height: 24 }} src={settings[selectedIndex].img} />
                     <Typography sx={{
@@ -177,13 +171,15 @@ const HeaderCom = (props) => {
                       overflow: 'hidden', whiteSpace: 'nowrap', color: '#fff'
                     }} textAlign="center">{addressTruncate}</Typography>
                   </Box>
-                  <Button variant="outlined" sx={{color: 'rgb(152, 152, 177)', border: 'solid 1px rgb(58,58,80)', background: 'rgb(41,41,57)', borderRadius: '10px', '&:hover': {
-                    border: 'solid 1px #fff', background: 'rgb(41,41,57)', color: '#fff'
-                  }}} onClick={disconnect}>Disconnect</Button>
+                  <Button variant="outlined" sx={{
+                    color: 'rgb(152, 152, 177)', border: 'solid 1px rgb(58,58,80)', background: 'rgb(41,41,57)', borderRadius: '10px', '&:hover': {
+                      border: 'solid 1px #fff', background: 'rgb(41,41,57)', color: '#fff'
+                    }
+                  }} onClick={disconnect}>Disconnect</Button>
                 </Box>
                 <Box>
-                  <Typography color="primary" sx={{fontWeight: 600, fontSize: '15px'}}>Balance</Typography>
-                  <Typography component="div" color="text.light" sx={{fontWeight: 900, fontSize: '28px', lineHeight:'1', paddingTop: '5px'}}>{`${Number(walletBal).toFixed(2)} MATIC`}</Typography>
+                  <Typography color="primary" sx={{ fontWeight: 600, fontSize: '15px' }}>Balance</Typography>
+                  <Typography component="div" color="text.light" sx={{ fontWeight: 900, fontSize: '28px', lineHeight: '1', paddingTop: '5px' }}>{`${Number(walletBal).toFixed(2)} MATIC`}</Typography>
                 </Box>
               </Box>
 
@@ -240,6 +236,35 @@ const HeaderCom = (props) => {
                 </MenuItem>
               ))}
             </Menu>}
+            <Popover
+              id={id}
+              open={open}
+              sx={{marginTop: 2, '.MuiPopover-paper': {borderRadius: '20px'}}}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Box sx={{  width: '400px', height: 'auto', background: 'rgb(41, 41, 57)', padding: '15px 20px' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+                <Typography color="text.light" id="publicHash" sx={{ p: 0, wordBreak: 'break-all', fontWeight: 600 }}>Copy your Public Hash</Typography>
+                <Button sx={{height: '35px', fontSize: '14px'}} onClick={copyContent} variant="contained" endIcon={<ContentCopyIcon />}>
+                  Copy
+                </Button>
+                </Box>
+
+                <Typography id="publicHash" sx={{ p: 0, wordBreak: 'break-all' }}>{publicHash}</Typography>
+                {/* <IconButton sx={{ width: '40px', height: '40px', margin: '40px 10px 0 0' }} onClick={copyContent}>
+                  <ContentCopyIcon />
+                </IconButton> */}
+              </Box>
+            </Popover>
           </Box>
         </Toolbar>
       </Container>
