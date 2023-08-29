@@ -381,17 +381,17 @@ const Home = () => {
 
             <Box className="firstBox" sx={{ minWidth: '700px' }}>
               <Typography variant="body1" gutterBottom component="div" color="text.light" >
-                Choose which cryptocurrency you want to
+              Private transactions made easy
               </Typography>
               <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
-                Privately transfer via
+              Transfer Crypto Privately via 
               </Typography>
               <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
-                Privacy protocol.
+              Beldex Privacy Protocol.
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Currently we are supporting only Polygon network.</Typography>
+              <Typography sx={{ fontSize: 30, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">Currently supports the Polygon Network.</Typography>
               <Box sx={{ display: 'flex', marginTop: '10px', justifyContent: 'flex-start' }}>
                 <Button onClick={() => swapMarket('MATIC')} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', marginRight: '10px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Sign-In</Button>
                 <Button onClick={() => swapMarket('MATIC', true)} sx={{ background: 'rgb(51, 51, 69)', fontWeight: 600, height: '45px', border: 'solid 2px rgb(51,51,69)', width: '100px', padding: '5px 10px', borderRadius: '10px', '&:hover': { background: 'rgb(51, 51, 69)', boxShadow: 'none', border: 'solid 2px rgb(80,175,75)' } }} variant="outlined" color="secondary">Register</Button>
