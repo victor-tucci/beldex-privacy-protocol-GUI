@@ -180,7 +180,7 @@ const HeaderCom = (props) => {
                 </Box>
                 <Box>
                   <Typography color="primary" sx={{ fontWeight: 600, fontSize: '15px' }}>Balance</Typography>
-                  <Typography component="div" color="text.light" sx={{ fontWeight: 900, fontSize: '28px', lineHeight: '1', paddingTop: '5px' }}>{`${Number(walletBal).toFixed(2)} MATIC`}</Typography>
+                  <Typography component="div" color="text.light" sx={{ fontWeight: 900, fontSize: '28px', lineHeight: '1', paddingTop: '5px' }}>{`${Math.floor(walletBal * 100) / 100} MATIC`}</Typography>
                 </Box>
               </Box>
 

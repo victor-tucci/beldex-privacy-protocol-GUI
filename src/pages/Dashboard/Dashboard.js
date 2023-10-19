@@ -40,17 +40,17 @@ const computeViewLabels = (swap) => {
     mint: {
       subTitle: `Deposit ${swap} to r${swap}`,
       btnLabel: "Confirm Mint",
-      helperText: (val) => `Unit ${Math.floor(val)} r${swap} = ${Math.floor(val) / 100} ${swap}`
+      helperText: (val) => `Unit ${val ? val : 0} r${swap} = ${(val ? val : 0)} ${swap}`
     },
     transfer: {
       subTitle: `My ${swap} Account Address`,
       btnLabel: "Confirm Transfer",
-      helperText: (val) =>  ""
+      helperText: (val) => ""
     },
     redeem: {
       subTitle: `Redeem r${swap} to ${swap}`,
       btnLabel: "Confirm Redeem",
-      helperText: (val) => `You will receive ${Math.floor(val) / 100} ${swap}`
+      helperText: (val = 0) => `You will receive ${(val ? val : 0)} ${swap}`
     },
   }
 }
@@ -122,9 +122,9 @@ const Dashboard = (props) => {
     const balance = await web3Obj.eth.getBalance(address, (err, wei) => { });
     if (user.account) {
       await user.account.update();
-      setMintValue(user.account.available() + user.account.pending());
+      setMintValue((user.account.available() + user.account.pending())/100);
     }
-    setWalletBal(balance / 1e16);
+    setWalletBal(balance / 1e18);
   }
 
   const setWalletAddressStore = (obj) => {
@@ -214,7 +214,7 @@ const Dashboard = (props) => {
       setSnackbar({ open: true, severity: 'warning', message: '[Short window] Your redeem has been queued. Please wait' });
       await user.redeem(transValue);
       await getBalance(walletAddress);
-      setSnackbar({ open: true, severity: 'success', message: `Redeem of ${transValue}rMATIC to ${transValue/100} MATIC was successful` });
+      setSnackbar({ open: true, severity: 'success', message: `Redeem of ${transValue}rMATIC to ${transValue} MATIC was successful` });
       loading(false);
     } catch (e) {
       setSnackbar({ open: true, severity: 'error', message: e.message });
@@ -229,16 +229,17 @@ const Dashboard = (props) => {
     try {
       loading(true);
       const mintRes = await user.mint(transValue);
+      console.log('--mintRes-', mintRes);
       await getBalance(walletAddress);
       setSnackbar({ open: true, severity: 'success', message: `Mint of ${transValue} rMATIC was successful` });
       loading(false);
+      setView("transfer");
+      setViewLabel(viewLabelArr["transfer"].subTitle)
     } catch (e) {
       setSnackbar({ open: true, severity: 'error', message: e.message });
       loading(false);
     }
     setValue('');
-    setView("transfer");
-    setViewLabel(viewLabelArr["transfer"].subTitle)
     setBtnDisabled(false);
   }
 
@@ -349,7 +350,7 @@ const Dashboard = (props) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal/100)} publicHash={user && user.account && user.account.publicKeyEncoded()}/>
+      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal)} publicHash={user && user.account && user.account.publicKeyEncoded()} />
       {/* <SidePanel mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} /> */}
       <Box sx={ContentStyle}>
         <LeftPanel swap={swap} balance={walletBal} mintValue={mintValue} />
@@ -369,7 +370,7 @@ const Dashboard = (props) => {
                 <Typography component="div" sx={{ textAlign: 'left', pb: '5px' }} color="text.light" variant="subtitle1">Recipient Address</Typography>
                 <TextInput type="text" id="address" placeholder="Please Enter Address" maxIcon={false} name="address" value={address} onChange={handleAddressChange} />
               </Fragment>}
-            <TextInput type="number" value={transValue} placeholder="0 Unit" formLabel={viewLabelArr[view].helperText(transValue)} onChange={handleInputChange} maxIcon={view !== "mint"} name="unit" inputProps={{ min: 0, inputMode: 'numeric', pattern: '[0-9]*' }} maxOnClick={handleMaxOnClick} publicHash={user && user.account && user.account.publicKeyEncoded()} />
+            <TextInput type="number" value={transValue} placeholder="0 rMATIC" formLabel={viewLabelArr[view].helperText(transValue)} onChange={handleInputChange} maxIcon={view !== "mint"} name="unit" inputProps={{ min: 0, inputMode: 'numeric', pattern: '[0-9]*' }} maxOnClick={handleMaxOnClick} publicHash={user && user.account && user.account.publicKeyEncoded()} />
             <StyledButton disabled={btnDisabled} sxObj={{ marginTop: view === "transfer" ? '0px' : '103px' }} onClick={handleSubmit} label={viewLabelArr[view].btnLabel} color="primary" variant="contained" />
           </Box>
         </Box>

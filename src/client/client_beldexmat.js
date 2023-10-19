@@ -17,11 +17,13 @@ class ClientBeldexMAT extends ClientBase {
         that.checkRegistered();
         that.checkValue();
         var account = that.account;
+        value = value * 1e18/that.unit;
         console.log("Initiating mint: value of " + value + " units (" + value * that.unit + " wei)");
 
         let encGuess = '0x' + aes.encrypt(new BN(account.available()).toString(16), account.aesKey);
 
         var nativeValue = that.web3.utils.toBN(new BigNumber(value * that.unit)).toString();
+        console.log("nativeValue: ",nativeValue);
         if (mintGasLimit === undefined)
             mintGasLimit = 400000;
         localStorage.removeItem('mint_tx_hash')

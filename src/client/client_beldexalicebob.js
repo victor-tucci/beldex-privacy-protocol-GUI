@@ -21,6 +21,7 @@ class ClientBeldexAlicebob extends ClientBase {
         that.checkRegistered();
         that.checkValue();
         var account = that.account;
+        value = value * 1e18/that.unit;
         console.log("Initiating mint: value of " + value + " units (" + value * that.unit + " tokens)");
         var nativeValue = that.web3.utils.toBN(new BigNumber(value * that.unit)).toString();
         if (approveGasLimit === undefined)
