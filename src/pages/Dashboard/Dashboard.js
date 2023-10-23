@@ -40,7 +40,7 @@ const computeViewLabels = (swap) => {
     mint: {
       subTitle: `Deposit ${swap} to r${swap}`,
       btnLabel: "Confirm Mint",
-      helperText: (val) => `Unit ${val ? val : 0} r${swap} = ${(val ? val : 0)} ${swap}`
+      helperText: (val) => `${val ? val : 0} r${swap} = ${(val ? val : 0)} ${swap}`
     },
     transfer: {
       subTitle: `My ${swap} Account Address`,
