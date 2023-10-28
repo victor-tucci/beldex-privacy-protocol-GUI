@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box} from '@mui/material';
+import { Box } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -11,7 +11,10 @@ const TextInput = (props) => {
 
   const restrictMinus = e => {
     const inputKeyCode = e.keyCode ? e.keyCode : e.which;
-    if (inputKeyCode != null && inputKeyCode === 45) e.preventDefault();
+    const blockInvalidKeyCode = [43, 45, 69, 101]
+    if (inputKeyCode != null && blockInvalidKeyCode.includes(inputKeyCode)) {
+      e.preventDefault();
+    }
   };
 
   const onWheelUp = (e) => {
@@ -25,12 +28,12 @@ const TextInput = (props) => {
 
   return (
     <Box>
-      <FormControl sx={{ width: '100%', m: 0, pb: '40px', ...sxObj }} variant="outlined">
+      <FormControl sx={{ width: '100%', maxWidth: '100%', m: 0, pb: '40px', ...sxObj }} variant="outlined">
         <OutlinedInput
           placeholder={placeholder}
           type={type}
           onWheel={onWheelUp}
-          sx={{ border: 'solid 1px #2f2f3e', borderRadius: '10px', padding: '15px', height: '60px', color: 'text.light', fontSize: 20, backgroundColor: '#1b1b25' }}
+          sx={{ border: 'solid 1px #2f2f3e', borderRadius: '10px', padding: '15px', height: '60px', color: 'text.light', fontSize: 20, backgroundColor: '#1b1b25', '.MuiInputBase-input': maxIcon ? { paddingRight: '25px' } : {} }}
           name={name}
           value={value}
           inputProps={inputProps}
@@ -54,7 +57,7 @@ const TextInput = (props) => {
             </IconButton>
           </InputAdornment>}
         />
-        {formLabel && <FormHelperText variant="filled" sx={{ textAlign: 'right', color: "text.primary", fontSize: 16, height: '27px' }} margin="dense">{formLabel}</FormHelperText>}
+        {formLabel && <FormHelperText variant="filled" sx={{ textAlign: 'right', color: "text.primary", fontSize: 16, height: '27px', wordBreak: 'break-word', width: '100%' }} margin="dense">{formLabel}</FormHelperText>}
       </FormControl>
     </Box>
   )
