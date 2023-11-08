@@ -260,6 +260,18 @@ const Dashboard = (props) => {
     setBtnDisabled(false);
   }
 
+  const getErrMsg = (e) => {
+    if(e.message) {
+      if(e.message.includes("Transaction has been reverted by the EVM")){
+        return "Transaction has been reverted by the EVM."
+      } else {
+        return e.message
+      }
+    }else{
+      return e;
+    }
+  }
+
   const makeTransfer = async () => {
     setBtnDisabled(true);
     try {
@@ -269,7 +281,7 @@ const Dashboard = (props) => {
       setSnackbar({ open: true, severity: 'success', message: `Transferred of ${transValue} rMATIC was successful` });
       loading(false);
     } catch (e) {
-      setSnackbar({ open: true, severity: 'error', message: e.message ? e.message : e });
+      setSnackbar({ open: true, severity: 'error', message: getErrMsg(e) });
       loading(false);
     }
     setValue('');
