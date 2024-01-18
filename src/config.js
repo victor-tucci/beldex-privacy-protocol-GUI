@@ -1,11 +1,20 @@
 const config = {
     mnemonic: "must antenna drop draw repeat crumble excuse skin stumble either mask plate",
     deployed : {
-        'Utils':  "0x4b07413e81d8a546301ee9669b6c8ac1f5804560",
-        'BeldexIP':  "0x5c1b43f166C0aA616B0bF11A2F633e37706A13E7",
-        'BeldexRedeem':  "0x4b07413e81d8a546301ee9669b6c8ac1f5804560",
-        'BeldexTransfer':  "0x0813c16dcf219d8ea3c316aa1fa37ab3f36bb416",
-        'BeldexMAT' : "0x5bd5f5f24890681acbcfed2124f2b561941aba51",
+        // sarath 7.6(mainnet)
+        'Utils': "0x840d224C6930E23a2bE1f933E209334c22dEA0db",
+        'BeldexIP': "0x4C669D6534955FCdaE66450125133E3755908193",
+        'BeldexRedeem': "0x644B7B737C50491025ed746af023f16728a8bceC",
+        'BeldexTransfer': "0x50c55FBFf8031800A8602023CeeF4FE47E93952c",
+        'BeldexMAT': "0xA8018C0d83aA999d2DAE60A4A76a6eCc42c872A0",
+        
+        // saravanan(update) matictestnet
+        // 'Utils': "0x4d14cd36e6Faa727bcEF8F2b797F7C447B302AFE",
+        // 'BeldexIP': "0x59A0aDef3EC7c9C142B43f6A60b84a032B6fA1DE",
+        // 'BeldexRedeem': "0x53B324B84acd070b8e546C492a8CD89cc906D18D",
+        // 'BeldexTransfer': "0x9094f0958EbFcb843258e06d1E7F1eb6508f45e5",
+        // 'BeldexMAT': "0xC2a40d663017A6F9ce31844Cd2865273f172194f",
+
     }
     // deployed: {
     //     'Utils': "0x5Bd0CC10109243e8441329AF1d19b6c3a2a8BDbA",

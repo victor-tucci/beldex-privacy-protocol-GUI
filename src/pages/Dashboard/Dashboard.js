@@ -93,10 +93,12 @@ const Dashboard = (props) => {
         web3Obj = new Web3(window.BinanceChain);
       }
       contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
+      console.log("storeAddr.walletAddress : ",storeAddr.walletAddress);
       user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
       const userInit = await user.init();
       const userLogin = await user.login(loginKey.key);
       const walBal = await getBalance(storeAddr.walletAddress);
+      console.log("walBal : ",walBal);
       loading(false);
     };
 
@@ -125,6 +127,7 @@ const Dashboard = (props) => {
       setMintValue(user.account.available() + user.account.pending());
     }
     setWalletBal(balance / 1e16);
+    return balance;
   }
 
   const setWalletAddressStore = (obj) => {

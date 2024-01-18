@@ -19,7 +19,7 @@ class ClientBeldexMAT extends ClientBase {
         var account = that.account;
         console.log("Initiating mint: value of " + value + " units (" + value * that.unit + " wei)");
 
-        let encGuess = '0x' + aes.encrypt(new BN(account.available()).toString(16), account.aesKey);
+        let encGuess = '0x' + aes.encrypt(new BN(account.available()).toString(16), account.aesKey);   // available amount with encryption
 
         var nativeValue = that.web3.utils.toBN(new BigNumber(value * that.unit)).toString();
         if (mintGasLimit === undefined)
