@@ -585,11 +585,20 @@ class ClientBase {
 
         let encGuess = '0x' + aes.encrypt(new BN(account.available()).toString(16), account.aesKey);
 
+        /* Can't use this estimate here because it seems to modify the contract state, making the proof invalid... */
+        var redeemGas = await that.beldex.methods.redeem(account.publicKeySerialized(), value, u, proof, encGuess)
+            .estimateGas({from: that.home, gas: that.gasLimit});
+        console.log("Estimated Redeem gas: ", redeemGas);
+        // 1705687 ,1697333,
+
+        var gasPrice = await this.web3.eth.getGasPrice();
+        console.log('Gasprice in Gwei',this.web3.utils.fromWei(gasPrice, 'gwei'))
+
         if (redeemGasLimit === undefined)
             redeemGasLimit = 3000000;
         localStorage.removeItem('redeem_tx_hash')
         let transaction = that.beldex.methods.redeem(account.publicKeySerialized(), value, u, proof, encGuess) // available amount
-            .send({from: that.home, gas: redeemGasLimit})
+            .send({from: that.home, gas: redeemGasLimit, gasPrice: gasPrice})
             .on('transactionHash', (hash) => {
                 console.log("redeem submitted (txHash = \"" + hash + "\").");
                 localStorage.setItem('redeem_tx_hash',hash)
@@ -798,7 +807,7 @@ class ClientBase {
         localStorage.removeItem('transfer_tx_hash')
         let transaction =
             that.beldex.methods.transfer(C, D, serializedY, u, proof)
-                .send({from: that.home, value: maxFeeValue, gas: transferGasLimit, gasPrice: gasPrice})
+                .send({from: that.home, gas: transferGasLimit, gasPrice: gasPrice})
                 .on('transactionHash', (hash) => {
                     that._transfers.add(hash);
                     console.log("Transfer submitted (txHash = \"" + hash + "\")");
