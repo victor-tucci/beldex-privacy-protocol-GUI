@@ -585,6 +585,9 @@ class ClientBase {
 
         let encGuess = '0x' + aes.encrypt(new BN(account.available()).toString(16), account.aesKey);
 
+        var gasPrice = await this.web3.eth.getGasPrice();
+        console.log('Gasprice in Gwei',this.web3.utils.fromWei(gasPrice, 'gwei'))
+
         /* Can't use this estimate here because it seems to modify the contract state, making the proof invalid... */
         var redeemGas = await that.beldex.methods.redeem(account.publicKeySerialized(), value, u, proof, encGuess)
             .estimateGas({from: that.home, gas: that.gasLimit});
@@ -796,7 +799,6 @@ class ClientBase {
         //console.log("Estimated transfer gas: ", transferGas);
 
         var gasPrice = await this.web3.eth.getGasPrice();
-        console.log('Gasprice in wei : ',  gasPrice)
         console.log('Gasprice in Gwei',this.web3.utils.fromWei(gasPrice, 'gwei'))
 
         if (transferGasLimit === undefined)
