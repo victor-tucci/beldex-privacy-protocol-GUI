@@ -9,11 +9,18 @@ const config = {
         // 'BeldexMAT': "0xA8018C0d83aA999d2DAE60A4A76a6eCc42c872A0",
         
         // saravanan(update) matictestnet
-        'Utils': "0x8Ea55Ba10A29605Ef3797EC76C2de91eBc3FAE63",
-        'BeldexIP': "0x3C4f017873B899fda5A81E7198a765644A39b5a3",
-        'BeldexRedeem': "0xB4Ebc2242db177AB587D1FFD1f021f17f540B67F",
-        'BeldexTransfer': "0xDDf332368569253E92560B2Ee057F32E4D683cc3",
-        'BeldexMAT': "0x4F0a9b8Fa1801b5b07c7AC6d126e44Fa6859BA11",
+        // 'Utils': "0xfe18d45CBd5B4cA0D37eBef374A7F6f7cc9F4f3D",
+        // 'BeldexIP': "0x13b576c0DD88e814fDCF7AeD837757AA660862EA",
+        // 'BeldexRedeem': "0x0CC080f29ccFdDe494D09Dd0654c6613Ae6C5C5D",
+        // 'BeldexTransfer': "0xc0C5A3e74147D0FcEfF5fF58c79b5D2ADC6e6E36",
+        // 'BeldexMAT': "0xd25bD816C5205d0771901aDDfe878788d2c6334b",
+
+        // saravanan(update) maticmainnet
+        'Utils': "0x96C08939400Fa0FfD401607218fEAE3fC4AF1BBE",
+        'BeldexIP': "0x4Ed33123AA3F64aeA6a69130C6662ec13dc4E2dF",
+        'BeldexRedeem': "0x8B44660A56a25636c733d77168240C304436C449",
+        'BeldexTransfer': "0xa80d8D48E25D3e6172518417083784B4b21357CD",
+        'BeldexMAT': "0xf501540b275587A090c92b0a608ce7e8712F535A",
 
     }
     // deployed: {

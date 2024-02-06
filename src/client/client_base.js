@@ -442,12 +442,14 @@ class ClientBase {
             // This branch would recover the account previously bound to the secret, and the corresponding balance.
             return await that.syncAccountState();
         } else {
+            var gasPrice = await this.web3.eth.getGasPrice();
+            console.log('Gasprice in Gwei',this.web3.utils.fromWei(gasPrice, 'gwei'))
 
             var [c, s] = utils.sign(that.beldex._address, that.account.keypair);
             if (registerGasLimit === undefined)
                 registerGasLimit = 190000;
             let transaction = that.beldex.methods.register(that.account.publicKeySerialized(), c, s)
-                .send({from: that.home, gas: registerGasLimit})
+                .send({from: that.home, gas: registerGasLimit, gasPrice: gasPrice})
                 .on('transactionHash', (hash) => {
                     console.log("Registration submitted (txHash = \"" + hash + "\").");
                 })
@@ -594,8 +596,6 @@ class ClientBase {
         console.log("Estimated Redeem gas: ", redeemGas);
         // 1705687 ,1697333,
 
-        var gasPrice = await this.web3.eth.getGasPrice();
-        console.log('Gasprice in Gwei',this.web3.utils.fromWei(gasPrice, 'gwei'))
 
         if (redeemGasLimit === undefined)
             redeemGasLimit = 3000000;
