@@ -125,7 +125,7 @@ const Home = () => {
           const account = await window.ethereum?.request({ method: 'eth_requestAccounts' });
           if (account) connectToMetaMask(selectedWallet);
         } catch (err) {
-          setSnackbar({ open: true, severity: 'error', message: err.message });
+          setSnackbar({ open: true, severity: 'error', message: err.message ? err.message : err });
         }
       } else {
         setSnackbar({ open: true, severity: 'warning', message: 'Meta Mask not installed.' });
@@ -177,14 +177,14 @@ const Home = () => {
       window.ethereum.enable();
       if (web3Obj) {
         let address = setInterval(() => {
-          web3Obj.eth.getCoinbase((err, res) => {
+          web3Obj.eth.getCoinbase(async (err, res) => {
             if (res) {
               // check drop down values
               contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
               clearInterval(address);
-              web3Obj.eth.getBalance(res).then(data => {
-                setWalletBal(data / 1e18);
-              });
+              const balance = await web3Obj.eth.getBalance(res, (err, wei) => { });
+              const currentBal = Math.floor((balance / 1e18) * 10000) / 10000;
+              setWalletBal(currentBal);
               user = new ClientBeldexMAT(web3Obj, contract, res);
               userData.setUserDetails(user);
 
@@ -221,25 +221,29 @@ const Home = () => {
   }
 
   const swapMarket = async (selectedMarket, isRegView = false) => {
-    dispatch({
-      type: actionTypes.SWAPCHANGE,
-      payload: selectedMarket
-    });
-    if (selectedMarket === "BNB") {
-      if (walletAddress && storeAddr.walletName === "BSC") {
-        openUserAuthModal(isRegView);
-      } else {
-        await connectToBinance("BSC");
-        openUserAuthModal(isRegView);
+    if (navigator.onLine) {
+      dispatch({
+        type: actionTypes.SWAPCHANGE,
+        payload: selectedMarket
+      });
+      if (selectedMarket === "BNB") {
+        if (walletAddress && storeAddr.walletName === "BSC") {
+          openUserAuthModal(isRegView);
+        } else {
+          await connectToBinance("BSC");
+          openUserAuthModal(isRegView);
 
+        }
+      } else if (selectedMarket !== "BNB") {
+        if (walletAddress && storeAddr.walletName === "Meta Mask") {
+          openUserAuthModal(isRegView);
+        } else {
+          await connectToMetaMask("Meta Mask");
+          openUserAuthModal(isRegView);
+        }
       }
-    } else if (selectedMarket !== "BNB") {
-      if (walletAddress && storeAddr.walletName === "Meta Mask") {
-        openUserAuthModal(isRegView);
-      } else {
-        await connectToMetaMask("Meta Mask");
-        openUserAuthModal(isRegView);
-      }
+    } else {
+      setSnackbar({ open: true, severity: 'error', message: 'Please check your internet connectivity.' });
     }
   }
 
@@ -326,7 +330,7 @@ const Home = () => {
       await downloadScret(key);
       loading(false);
     } catch (e) {
-      setSnackbar({ open: true, severity: 'error', message: e.message });
+      setSnackbar({ open: true, severity: 'error', message: e.message ? e.message : e });
       loading(false);
     }
   }
@@ -343,10 +347,12 @@ const Home = () => {
           payload: key
         });
         navigate('/dashboard');
+      } else if (loginRes === -1) {
+        setSnackbar({ open: true, severity: 'error', message: "Login failed: this beldex account is not exists." });
       }
       loading(false);
     } catch (e) {
-      setSnackbar({ open: true, severity: 'error', message: e.message });
+      setSnackbar({ open: true, severity: 'error', message: e.message ? e.message : e });
       loading(false);
     }
   }
@@ -355,7 +361,7 @@ const Home = () => {
     <Box sx={{ display: 'flex', background: `url(${BgImage})`, backgroundSize: 'cover', minHeight: '100vh' }}>
       <Box sx={{ background: 'rgba(19, 19, 26, 0.75)', width: '100%' }}>
         <CssBaseline />
-        <Header showNav={true} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={walletBal} handleCloseMenu={handleCloseMenu} publicHash={user && user.account && user.account.publicKeyEncoded()}/>
+        <Header showNav={true} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={walletBal} handleCloseMenu={handleCloseMenu} publicHash={user && user.account && user.account.publicKeyEncoded()} />
         <Menu
           sx={{ mt: '45px' }}
           id="menu-appbar"
@@ -381,13 +387,13 @@ const Home = () => {
 
             <Box className="firstBox" sx={{ minWidth: '700px' }}>
               <Typography variant="body1" gutterBottom component="div" color="text.light" >
-              Private transactions made easy
+                Private transactions made easy
               </Typography>
               <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
-              Transfer Crypto Privately via 
+                Transfer Crypto Privately via
               </Typography>
               <Typography sx={{ fontSize: 60, fontWeight: 900, m: 0 }} gutterBottom component="div" color="text.light">
-              Beldex Privacy Protocol.
+                Beldex Privacy Protocol.
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>

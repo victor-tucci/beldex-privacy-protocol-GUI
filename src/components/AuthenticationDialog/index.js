@@ -51,10 +51,11 @@ const AuthenticationDialog = (props) => {
   const [registerView, setRegisterView] = useState(isRegisterView);
   const [pickOwn, setPickOwn] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-  
+
   useEffect(() => {
-    setRegisterView(isRegisterView)}, [isRegisterView])
-  
+    setRegisterView(isRegisterView)
+  }, [isRegisterView])
+
   const showRegister = () => {
     setRegisterView(true)
   }
@@ -84,26 +85,34 @@ const AuthenticationDialog = (props) => {
   };
 
   const handleSubmit = () => {
-    if (registerView) {
-      setRegisterView(false)
-    } else {
-      if (privateKey) {
-        handleLogin(privateKey)
+    if (navigator.onLine) {
+      if (registerView) {
+        setRegisterView(false)
       } else {
-        setSnackbar({ open: true, severity: 'warning', message: 'Input field should not be empty' });
+        if (privateKey) {
+          handleLogin(privateKey)
+        } else {
+          setSnackbar({ open: true, severity: 'warning', message: 'Input field should not be empty' });
+        }
       }
+    } else {
+      setSnackbar({ open: true, severity: 'error', message: 'Please check your internet connectivity.' });
     }
   }
 
   const handlePrivateKeyGen = async () => {
-    if (pickOwn) {
-      if (ownKey) {
-        handleRegister(ownKey);
-      } else {
-        setSnackbar({ open: true, severity: 'warning', message: 'Input field should not be empty' });
+    if (navigator.onLine) {
+      if (pickOwn) {
+        if (ownKey) {
+          handleRegister(ownKey);
+        } else {
+          setSnackbar({ open: true, severity: 'warning', message: 'Input field should not be empty' });
+        }
+      } else if (!pickOwn) {
+        await handleRegister();
       }
-    } else if (!pickOwn) {
-      await handleRegister();
+    } else {
+      setSnackbar({ open: true, severity: 'error', message: 'Please check your internet connectivity.' });
     }
   }
 

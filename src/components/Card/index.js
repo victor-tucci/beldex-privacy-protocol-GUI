@@ -72,11 +72,11 @@ export default function StyledCard(props) {
               {props.label}
             </Typography>
             <Typography component="div" variant="h2" sx={{ fontWeight: 'bold' }} >
-              {props.unitValue} <Typography component="span" variant="h6" >Unit</Typography>
+              {props.unitValue}
             </Typography>
-            <Typography variant="subtitle2" color="text.subTitle" component="div">
-              {/* BNB &asymp; (0.318BNB) */} {props.endLabel}
-            </Typography>
+            {/* <Typography variant="subtitle2" color="text.subTitle" component="div">
+               {props.endLabel}
+            </Typography> */}
           </CardContent>
         </Box>
       </Card>

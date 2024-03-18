@@ -6,16 +6,13 @@ import { withStyles } from '@mui/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { UserContext } from '../../userContext';
 import { Header, StyledButton, TextInput, CustomizedSnackbars } from '../../components';
-import SidePanel from './SidePanel';
 import LeftPanel from './LeftPanel';
 import { ContentStyle } from './ContentStyle';
 import * as actionTypes from "../../common/actionTypes";
 import HorizontalDivider from './../../icons/HorizontalDivider';
 import ClientBeldexMAT from '../../client/client_beldexmat';
-import ClientBeldexETH from '../../client/client_beldexeth';
 import config from '../../config';
 import BeldexMAT from '../../contract-artifacts/BeldexMAT.json';
-import BeldexETH from '../../contract-artifacts/BeldexETH.json';
 const componentStyle = theme => {
   return ({
     toggleBtn: {
@@ -40,17 +37,17 @@ const computeViewLabels = (swap) => {
     mint: {
       subTitle: `Deposit ${swap} to r${swap}`,
       btnLabel: "Confirm Mint",
-      helperText: (val) => `Unit ${Math.floor(val)} r${swap} = ${Math.floor(val) / 100} ${swap}`
+      helperText: (val) => `${val ? val : 0} r${swap} = ${(val ? val : 0)} ${swap}`
     },
     transfer: {
       subTitle: `My ${swap} Account Address`,
       btnLabel: "Confirm Transfer",
-      helperText: (val) =>  ""
+      helperText: (val) => ""
     },
     redeem: {
       subTitle: `Redeem r${swap} to ${swap}`,
       btnLabel: "Confirm Redeem",
-      helperText: (val) => `You will receive ${Math.floor(val) / 100} ${swap}`
+      helperText: (val = 0) => `You will receive ${(val ? val : 0)} ${swap}`
     },
   }
 }
@@ -95,10 +92,9 @@ const Dashboard = (props) => {
       contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
       console.log("storeAddr.walletAddress : ",storeAddr.walletAddress);
       user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
-      const userInit = await user.init();
-      const userLogin = await user.login(loginKey.key);
-      const walBal = await getBalance(storeAddr.walletAddress);
-      console.log("walBal : ",walBal);
+      await user.init();
+      await user.login(loginKey.key);
+      await getBalance(storeAddr.walletAddress);
       loading(false);
     };
 
@@ -124,10 +120,10 @@ const Dashboard = (props) => {
     const balance = await web3Obj.eth.getBalance(address, (err, wei) => { });
     if (user.account) {
       await user.account.update();
-      setMintValue(user.account.available() + user.account.pending());
+      setMintValue((user.account.available() + user.account.pending()) / 100);
     }
-    setWalletBal(balance / 1e16);
-    return balance;
+    const currentBal = Math.floor((balance / 1e18) * 10000) / 10000;
+    setWalletBal(currentBal);
   }
 
   const setWalletAddressStore = (obj) => {
@@ -137,9 +133,25 @@ const Dashboard = (props) => {
       payload: obj
     });
   }
+  const countDecimals = (num) => {
+    var str = num.toString();
+    if (str.indexOf(".") !== -1 && str.indexOf("-") !== -1) {
+      return str.split("-")[1] || 0;
+    } else if (str.indexOf(".") !== -1) {
+      return str.split(".")[1].length || 0;
+    }
+    return str.split("-")[1] || 0;
+  }
 
   const handleInputChange = (e) => {
-    setValue(e.target.value)
+    const value = e.target.value;
+    if (countDecimals(value) <= 2) {
+      if (value.length <= 40) {
+        setValue(e.target.value)
+      }
+    } else {
+      setSnackbar({ open: true, severity: 'warning', message: 'Amount should accept the percise of 2 decimal only.' });
+    }
   }
 
   const handleAddressChange = (e) => {
@@ -180,7 +192,11 @@ const Dashboard = (props) => {
       } else if (view === 'transfer' && address === '') {
         setSnackbar({ open: true, severity: 'warning', message: 'Entered Recipient Address.' });
       } else {
-        makeTransaction(view);
+        if (navigator.onLine) {
+          makeTransaction(view);
+        } else {
+          setSnackbar({ open: true, severity: 'error', message: 'Please check your internet connectivity.' });
+        }
       }
     }
     else {
@@ -217,10 +233,10 @@ const Dashboard = (props) => {
       setSnackbar({ open: true, severity: 'warning', message: '[Short window] Your redeem has been queued. Please wait' });
       await user.redeem(transValue);
       await getBalance(walletAddress);
-      setSnackbar({ open: true, severity: 'success', message: `Redeem of ${transValue}rMATIC to ${transValue/100} MATIC was successful` });
+      setSnackbar({ open: true, severity: 'success', message: `Redeem of ${transValue}rMATIC to ${transValue} MATIC was successful` });
       loading(false);
     } catch (e) {
-      setSnackbar({ open: true, severity: 'error', message: e.message });
+      setSnackbar({ open: true, severity: 'error', message: e.message ? e.message : e });
       loading(false);
     }
     setValue('');
@@ -235,14 +251,26 @@ const Dashboard = (props) => {
       await getBalance(walletAddress);
       setSnackbar({ open: true, severity: 'success', message: `Mint of ${transValue} rMATIC was successful` });
       loading(false);
+      setView("transfer");
+      setViewLabel(viewLabelArr["transfer"].subTitle)
     } catch (e) {
-      setSnackbar({ open: true, severity: 'error', message: e.message });
+      setSnackbar({ open: true, severity: 'error', message: e.message ? e.message : e });
       loading(false);
     }
     setValue('');
-    setView("transfer");
-    setViewLabel(viewLabelArr["transfer"].subTitle)
     setBtnDisabled(false);
+  }
+
+  const getErrMsg = (e) => {
+    if(e.message) {
+      if(e.message.includes("Transaction has been reverted by the EVM")){
+        return "Transaction has been reverted by the EVM."
+      } else {
+        return e.message
+      }
+    }else{
+      return e;
+    }
   }
 
   const makeTransfer = async () => {
@@ -254,7 +282,7 @@ const Dashboard = (props) => {
       setSnackbar({ open: true, severity: 'success', message: `Transferred of ${transValue} rMATIC was successful` });
       loading(false);
     } catch (e) {
-      setSnackbar({ open: true, severity: 'error', message: e.message });
+      setSnackbar({ open: true, severity: 'error', message: getErrMsg(e) });
       loading(false);
     }
     setValue('');
@@ -276,7 +304,7 @@ const Dashboard = (props) => {
           const account = await window.ethereum?.request({ method: 'eth_requestAccounts' });
           if (account) connectToMetaMask(selectedWallet);
         } catch (err) {
-          setSnackbar({ open: true, severity: 'error', message: err.message });
+          setSnackbar({ open: true, severity: 'error', message: err.message ? err.message : err });
         }
       } else {
         setSnackbar({ open: true, severity: 'warning', message: 'Meta Mask not installed.' });
@@ -291,9 +319,7 @@ const Dashboard = (props) => {
       if (web3Obj) {
         const accounts = await window.BinanceChain.request({ method: 'eth_accounts' });
         const address = accounts[0] || null;
-        web3Obj.eth.getBalance(address).then(data => {
-          setWalletBal(data);
-        });
+        await getBalance(address);
         contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
         user = new ClientBeldexMAT(web3Obj, contract, address);
         setWalletAddressStore({
@@ -320,13 +346,11 @@ const Dashboard = (props) => {
       window.ethereum.enable();
       if (web3Obj) {
         let address = setInterval(() => {
-          web3Obj.eth.getCoinbase((err, res) => {
+          web3Obj.eth.getCoinbase(async (err, res) => {
             if (res) {
               contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
               clearInterval(address);
-              web3Obj.eth.getBalance(res).then(data => {
-                setWalletBal(data);
-              });
+              await getBalance(res);
               user = new ClientBeldexMAT(web3Obj, contract, res);
               setWalletAddressStore({
                 walletAddress: res,
@@ -352,8 +376,7 @@ const Dashboard = (props) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal/100)} publicHash={user && user.account && user.account.publicKeyEncoded()}/>
-      {/* <SidePanel mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} /> */}
+      <Header showNav={false} walletAddress={walletAddress} handleWalletMenuClose={handleWalletMenuClose} handleDrawerToggle={handleDrawerToggle} walletBal={(walletBal)} publicHash={user && user.account && user.account.publicKeyEncoded()} />
       <Box sx={ContentStyle}>
         <LeftPanel swap={swap} balance={walletBal} mintValue={mintValue} />
         <Box sx={{ width: '100%', textAlign: 'center' }}>
@@ -372,7 +395,7 @@ const Dashboard = (props) => {
                 <Typography component="div" sx={{ textAlign: 'left', pb: '5px' }} color="text.light" variant="subtitle1">Recipient Address</Typography>
                 <TextInput type="text" id="address" placeholder="Please Enter Address" maxIcon={false} name="address" value={address} onChange={handleAddressChange} />
               </Fragment>}
-            <TextInput type="number" value={transValue} placeholder="0 Unit" formLabel={viewLabelArr[view].helperText(transValue)} onChange={handleInputChange} maxIcon={view !== "mint"} name="unit" inputProps={{ min: 0, inputMode: 'numeric', pattern: '[0-9]*' }} maxOnClick={handleMaxOnClick} publicHash={user && user.account && user.account.publicKeyEncoded()} />
+            <TextInput type="number" value={transValue} placeholder="0 rMATIC" formLabel={viewLabelArr[view].helperText(transValue)} onChange={handleInputChange} maxIcon={view !== "mint"} name="unit" inputProps={{ min: 0.01, step: ".01", inputMode: 'numeric', pattern: '[0-9]*' }} maxOnClick={handleMaxOnClick} publicHash={user && user.account && user.account.publicKeyEncoded()} />
             <StyledButton disabled={btnDisabled} sxObj={{ marginTop: view === "transfer" ? '0px' : '103px' }} onClick={handleSubmit} label={viewLabelArr[view].btnLabel} color="primary" variant="contained" />
           </Box>
         </Box>

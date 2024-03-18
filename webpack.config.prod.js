@@ -49,12 +49,26 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.scss', '.json']
+    extensions: ['.js', '.jsx', '.scss', '.json'],
+    alias: {
+      process: "process/browser"
+    },
+    fallback: {
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer"),
+      "crypto": require.resolve("crypto-browserify"),
+      https: false,
+      http: false,
+      os: false,
+      url: false,
+      assert: false,
+    }
   },
   plugins: [
     new HTMLWebpackPlugin({
       template: './src/index.html',
-      filename: './index.html'
+      filename: './index.html',
+      favicon: './public/favicon.ico',
     }),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],

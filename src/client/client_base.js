@@ -563,7 +563,7 @@ class ClientBase {
         }
 
         console.log("Initiating redeem.");
-
+        value = value * 1e18/that.unit;
         let currentRound = await that._getRound();
         let encBalances = await that.beldex.methods.getBalance([account.publicKeySerialized()], currentRound).call();
         var encBalance = elgamal.unserialize(encBalances[0]);
@@ -610,7 +610,7 @@ class ClientBase {
                 account._state = await account.update();
                 account._state.nonceUsed = true;
                 account._state.pending -= value;
-                console.log("redeem of " + value + " was successful (uses gas: " + receipt["gasUsed"] + ")");
+                console.log("redeem of " + value/100 + " was successful (uses gas: " + receipt["gasUsed"] + ")");
                 console.log("Account state: available = ", that.account.available(), ", pending = ", that.account.pending(), ", lastRollOver = ", that.account.lastRollOver());
 
             })
@@ -719,7 +719,7 @@ class ClientBase {
         }
 
         console.log("Initiating transfer.");
-
+        value = value*1e18/that.unit;
         receiver = bn128.unserialize(serializedReceiver);
         if (bn128.pointEqual(receiver, account.publicKey()))
             throw new Error("Sending to yourself is currently unsupported.");

@@ -1,27 +1,16 @@
 const config = {
     mnemonic: "must antenna drop draw repeat crumble excuse skin stumble either mask plate",
-    deployed : {
-        // sarath 7.6(mainnet)
-        // 'Utils': "0x840d224C6930E23a2bE1f933E209334c22dEA0db",
-        // 'BeldexIP': "0x4C669D6534955FCdaE66450125133E3755908193",
-        // 'BeldexRedeem': "0x644B7B737C50491025ed746af023f16728a8bceC",
-        // 'BeldexTransfer': "0x50c55FBFf8031800A8602023CeeF4FE47E93952c",
-        // 'BeldexMAT': "0xA8018C0d83aA999d2DAE60A4A76a6eCc42c872A0",
-        
-        // saravanan(update) matictestnet
-        // 'Utils': "0xfe18d45CBd5B4cA0D37eBef374A7F6f7cc9F4f3D",
-        // 'BeldexIP': "0x13b576c0DD88e814fDCF7AeD837757AA660862EA",
-        // 'BeldexRedeem': "0x0CC080f29ccFdDe494D09Dd0654c6613Ae6C5C5D",
-        // 'BeldexTransfer': "0xc0C5A3e74147D0FcEfF5fF58c79b5D2ADC6e6E36",
-        // 'BeldexMAT': "0xd25bD816C5205d0771901aDDfe878788d2c6334b",
-
-        // saravanan(update) maticmainnet
-        'Utils': "0x96C08939400Fa0FfD401607218fEAE3fC4AF1BBE",
-        'BeldexIP': "0x4Ed33123AA3F64aeA6a69130C6662ec13dc4E2dF",
-        'BeldexRedeem': "0x8B44660A56a25636c733d77168240C304436C449",
-        'BeldexTransfer': "0xa80d8D48E25D3e6172518417083784B4b21357CD",
-        'BeldexMAT': "0xf501540b275587A090c92b0a608ce7e8712F535A",
-
+    deployed: {
+        'Utils': "0xB96D82fC902D42F661D413b1fDE0609b861560E3",
+        'BeldexIP': "0xC8B8Bd9CD42c4b107726E628EE0E4E8a6eA74C76",
+        'BeldexRedeem': "0xCdACD026914b130e9BaB1614Bfc41B436866b78c",
+        'BeldexTransfer': "0x0386996eaE4a6E0596f539bD933E3c8A6A67c572",
+        'BeldexMAT': "0x8b089355D16975dBd013d4A76274E58Ce2F5499B",
+        // 'Utils':  "0x4b07413e81d8a546301ee9669b6c8ac1f5804560",
+        // 'BeldexIP':  "0x5c1b43f166C0aA616B0bF11A2F633e37706A13E7",
+        // 'BeldexRedeem':  "0x4b07413e81d8a546301ee9669b6c8ac1f5804560",
+        // 'BeldexTransfer':  "0x0813c16dcf219d8ea3c316aa1fa37ab3f36bb416",
+        // 'BeldexMAT' : "0x5bd5f5f24890681acbcfed2124f2b561941aba51",
     }
     // deployed: {
     //     'Utils': "0x5Bd0CC10109243e8441329AF1d19b6c3a2a8BDbA",
