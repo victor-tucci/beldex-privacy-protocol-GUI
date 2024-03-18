@@ -90,6 +90,7 @@ const Dashboard = (props) => {
         web3Obj = new Web3(window.BinanceChain);
       }
       contract = new web3Obj.eth.Contract(BeldexMAT.abi, config.deployed.BeldexMAT);
+      console.log("storeAddr.walletAddress : ",storeAddr.walletAddress);
       user = new ClientBeldexMAT(web3Obj, contract, storeAddr.walletAddress);
       await user.init();
       await user.login(loginKey.key);
