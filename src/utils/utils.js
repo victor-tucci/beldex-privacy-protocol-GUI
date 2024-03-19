@@ -57,6 +57,7 @@ utils.mapInto = (seed) => { // seed is flattened 0x + hex string
 };
 
 utils.gEpoch = (epoch) => {
+    console.log('epoch : ',epoch);
     return utils.mapInto(soliditySha3("Beldex", epoch));
 };
 

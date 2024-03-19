@@ -311,6 +311,7 @@ class ClientBase {
     @return The round corresponding to the timestamp (current time if not given).
     */
     async _getRound (counter) {
+        console.log("counter : " ,counter);
         var that = this;
         if (that.round_base == 0) {
             if (counter === undefined)
@@ -318,8 +319,10 @@ class ClientBase {
             else
                 return counter / that.round_len;
         }
-        else if (that.round_base == 1)
+        else if (that.round_base == 1){
+            console.log("counter : " ,counter);
             return Math.floor((counter === undefined ? (new Date).getTime() / 1000 : counter) / that.round_len);
+        }
         else
             throw new Error("Invalid round base.");
     }
