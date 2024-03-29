@@ -8,6 +8,13 @@ const config = {
         // 'BeldexTransfer': "0xc0C5A3e74147D0FcEfF5fF58c79b5D2ADC6e6E36",
         // 'BeldexMAT': "0xd25bD816C5205d0771901aDDfe878788d2c6334b",
 
+        // MaticTestnet Testing
+        'Utils': "0x457c664dB7fF822Ec8B83A5B4b4215b87Ca39733",
+        'BeldexIP': "0x6A23d0d878e56Acf09ebDf829B46004eA4f4DBD8",
+        'BeldexRedeem': "0x4a3A8d53D3B3f82C4195eeAAdB3cCBA8669cC640",
+        'BeldexTransfer': "0x3F4870030D88D0FB091787db25a2F574F7D1E8b6",
+        'BeldexMAT': "0x9999F08DD2aBdd69d89dFDBD83f1FB85Db694B4b",
+
         // MaticMainnet
         // 'Utils': "0x96C08939400Fa0FfD401607218fEAE3fC4AF1BBE",
         // 'BeldexIP': "0x4Ed33123AA3F64aeA6a69130C6662ec13dc4E2dF",
@@ -16,12 +23,12 @@ const config = {
         // 'BeldexMAT': "0xf501540b275587A090c92b0a608ce7e8712F535A",
 
         //BNBTestnet
-        'BeldexMAT': '0xDc439ABA0ef1E91BE9a270110392861Fab7005b2',
-        'BeldexIP': '0x63B76B38628c6D3e2373f8FeDf93DfEa86b2773D',
-        'BeldexRedeem': '0x4Ef5c5ea67a4190dbd05d831C89993550D273768',
-        'BeldexTransfer': '0x2Ac6890E0492A555344905c69C67e4d44C7Db83a',
-        'Migrations': '0x1b898a331b8a5DE906b30FFf480B8B33de406ca9',
-        'Utils': '0xd3941C0f1C60C21540621a574b28aBF0D10543ee',
+        // 'BeldexMAT': '0xDc439ABA0ef1E91BE9a270110392861Fab7005b2',
+        // 'BeldexIP': '0x63B76B38628c6D3e2373f8FeDf93DfEa86b2773D',
+        // 'BeldexRedeem': '0x4Ef5c5ea67a4190dbd05d831C89993550D273768',
+        // 'BeldexTransfer': '0x2Ac6890E0492A555344905c69C67e4d44C7Db83a',
+        // 'Migrations': '0x1b898a331b8a5DE906b30FFf480B8B33de406ca9',
+        // 'Utils': '0xd3941C0f1C60C21540621a574b28aBF0D10543ee',
         
     }
     // deployed: {

@@ -143,11 +143,15 @@ class ClientBase {
                 updated.pending = this._state.pending;
                 updated.nonceUsed = this._state.nonceUsed;
                 updated.lastRollOver = await that._getRound(counter);
-                if (this._state.lastRollOver < updated.lastRollOver) {
+                console.log('updated.available(before)',updated.available);
+                console.log('updated.pending(before)',updated.pending);
+                if (true) {
                     updated.available += updated.pending;
                     updated.pending = 0;
                     updated.nonceUsed = false;
                 }
+                console.log("updated.lastRollOver: ",updated.lastRollOver);
+                console.log('updated.available(after)',updated.available);
                 return updated;
             };
 
@@ -168,6 +172,7 @@ class ClientBase {
             };
 
             this.lastRollOver = () => {
+                console.log("this._state.lastRollOver:",this._state.lastRollOver)
                 return this._state.lastRollOver;
             };
 
@@ -202,6 +207,7 @@ class ClientBase {
 
         }();
         // First update to initialize the state.
+        console.log("initial update")
         this.account._state = await this.account.update();
 
     }
@@ -311,16 +317,17 @@ class ClientBase {
     @return The round corresponding to the timestamp (current time if not given).
     */
     async _getRound (counter) {
-        console.log("counter : " ,counter);
+        console.log("counter _getRound: " ,counter);
+        // console.log("roundbase :",that.round_base);
         var that = this;
         if (that.round_base == 0) {
+            console.log("check status");
             if (counter === undefined)
                 return Math.floor((await that.web3.eth.getBlockNumber()) / that.round_len);
             else
                 return counter / that.round_len;
         }
         else if (that.round_base == 1){
-            console.log("counter : " ,counter);
             return Math.floor((counter === undefined ? (new Date).getTime() / 1000 : counter) / that.round_len);
         }
         else
@@ -376,7 +383,7 @@ class ClientBase {
         var that = this;
         that.checkRegistered();
         let currentRound = await that._getRound();
-        let encBalances = await that.beldex.methods.getBalance([that.account.publicKeySerialized()], currentRound + 1).call();
+        let encBalances = await that.beldex.methods.getBalance([that.account.publicKeySerialized()]).call();
         var encBalance = elgamal.unserialize(encBalances[0]);
 
         var guess = await that.getGuess();
@@ -531,6 +538,7 @@ class ClientBase {
         if (value > account.balance())
             throw new Error("Requested redeem amount of " + value + " exceeds account balance of " + account.balance() + ".");
         var wait = await that._away();
+        console.log('wait : ',wait);
         //var seconds = Math.ceil(wait / 1000);
         var unit = that.round_base == 0 ? "blocks" : "seconds";
 
@@ -568,7 +576,7 @@ class ClientBase {
         console.log("Initiating redeem.");
         value = value * 1e18/that.unit;
         let currentRound = await that._getRound();
-        let encBalances = await that.beldex.methods.getBalance([account.publicKeySerialized()], currentRound).call();
+        let encBalances = await that.beldex.methods.getBalance([account.publicKeySerialized()]).call();
         var encBalance = elgamal.unserialize(encBalances[0]);
         //aes.decrypt(encGuess.slice(2), that.account.aesKey);
         var encNewBalance = elgamal.serialize(elgamal.subPlain(encBalance, value));
@@ -684,6 +692,7 @@ class ClientBase {
         if (value > account.balance())
             throw "Requested transfer amount of " + value + " exceeds account balance of " + account.balance() + ".";
         var wait = await that._away();
+        console.log('wait : ',wait);
         var unit = that.round_base == 0 ? "blocks" : "seconds";
 
         if (value > state.available) {
@@ -756,7 +765,7 @@ class ClientBase {
         var serializedY = y.map(bn128.serialize);
 
         let currentRound = await that._getRound();
-        let encBalances = await that.beldex.methods.getBalance(serializedY, currentRound).call();
+        let encBalances = await that.beldex.methods.getBalance(serializedY).call();
 
         var unserialized = encBalances.map((ct) => elgamal.unserialize(ct));
         if (unserialized.some((ct) => ct[0].eq(bn128.zero) && ct[1].eq(bn128.zero)))
