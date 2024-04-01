@@ -143,7 +143,7 @@ class ClientBase {
                 updated.pending = this._state.pending;
                 updated.nonceUsed = this._state.nonceUsed;
                 updated.lastRollOver = await that._getRound(counter);
-                if (this._state.lastRollOver < updated.lastRollOver) {
+                if (this._state.lastRollOver != updated.lastRollOver) {
                     updated.available += updated.pending;
                     updated.pending = 0;
                     updated.nonceUsed = false;
@@ -311,7 +311,6 @@ class ClientBase {
     @return The round corresponding to the timestamp (current time if not given).
     */
     async _getRound (counter) {
-        console.log("counter : " ,counter);
         var that = this;
         if (that.round_base == 0) {
             if (counter === undefined)
@@ -320,7 +319,6 @@ class ClientBase {
                 return counter / that.round_len;
         }
         else if (that.round_base == 1){
-            console.log("counter : " ,counter);
             return Math.floor((counter === undefined ? (new Date).getTime() / 1000 : counter) / that.round_len);
         }
         else
@@ -376,7 +374,7 @@ class ClientBase {
         var that = this;
         that.checkRegistered();
         let currentRound = await that._getRound();
-        let encBalances = await that.beldex.methods.getBalance([that.account.publicKeySerialized()], currentRound + 1).call();
+        let encBalances = await that.beldex.methods.getBalance([that.account.publicKeySerialized()]).call();
         var encBalance = elgamal.unserialize(encBalances[0]);
 
         var guess = await that.getGuess();
@@ -568,14 +566,10 @@ class ClientBase {
         console.log("Initiating redeem.");
         value = value * 1e18/that.unit;
         let currentRound = await that._getRound();
-        let encBalances = await that.beldex.methods.getBalance([account.publicKeySerialized()], currentRound).call();
+        let encBalances = await that.beldex.methods.getBalance([account.publicKeySerialized()]).call();
         var encBalance = elgamal.unserialize(encBalances[0]);
         //aes.decrypt(encGuess.slice(2), that.account.aesKey);
         var encNewBalance = elgamal.serialize(elgamal.subPlain(encBalance, value));
-        console.log("[Redeem (PROOF) privatekey   : ",account.privateKey());
-        console.log("[Redeem (PROOF) encBalance   : ",encBalance);
-        console.log("[Redeem (PROOF) lastRollOver : ",state.lastRollOver);
-        console.log("[Redeem (PROOF) encNewBalance: ",encNewBalance);
         // lastrollover is currentblockheight/24(roundlen)
         var proof = that.service.proveRedeem(
             encNewBalance[0], // balance(total) old values before this redeem
@@ -594,10 +588,9 @@ class ClientBase {
         console.log('Gasprice in Gwei',this.web3.utils.fromWei(gasPrice, 'gwei'))
 
         /* Can't use this estimate here because it seems to modify the contract state, making the proof invalid... */
-        var redeemGas = await that.beldex.methods.redeem(account.publicKeySerialized(), value, u, proof, encGuess)
-            .estimateGas({from: that.home, gas: that.gasLimit});
-        console.log("Estimated Redeem gas: ", redeemGas);
-        // 1705687 ,1697333,
+        // var redeemGas = await that.beldex.methods.redeem(account.publicKeySerialized(), value, u, proof, encGuess)
+        //     .estimateGas({from: that.home, gas: that.gasLimit});
+        // console.log("Estimated Redeem gas: ", redeemGas);
 
 
         if (redeemGasLimit === undefined)
@@ -756,7 +749,7 @@ class ClientBase {
         var serializedY = y.map(bn128.serialize);
 
         let currentRound = await that._getRound();
-        let encBalances = await that.beldex.methods.getBalance(serializedY, currentRound).call();
+        let encBalances = await that.beldex.methods.getBalance(serializedY).call();
 
         var unserialized = encBalances.map((ct) => elgamal.unserialize(ct));
         if (unserialized.some((ct) => ct[0].eq(bn128.zero) && ct[1].eq(bn128.zero)))
