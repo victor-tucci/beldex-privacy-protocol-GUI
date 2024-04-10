@@ -141,7 +141,7 @@ const HeaderCom = (props) => {
     <AppBar sx={{ padding: { xs: '10px', sm: '10px 90px' } }} position="fixed">
       <Container maxWidth="false" disableGutters>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <img onClick={() => navigate('/')} alt="" height="74px" width="auto" src={logo} />
+          <img onClick={()=>navigate(0)} alt="" height="74px" width="auto" src={logo} />
 
           <Box sx={{ flexGrow: 0, display: 'flex', gap: '10px' }}>
             {location.pathname === '/dashboard' &&
